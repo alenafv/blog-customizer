@@ -29,19 +29,23 @@ interface ArticleParamsFormProps {
 export const ArticleParamsForm = ({
 	setArticleState,
 }: ArticleParamsFormProps) => {
-	const [open, setOpen] = useState(false);
+	const [isMenuOpen, setIsMenuOpen] = useState(false);
 	const [formSettings, setFormSettings] =
 		useState<ArticleStateType>(defaultArticleState);
 	const sidebarRef = useRef<HTMLDivElement>(null);
 
 	const togglePanel = () => {
-		setOpen((prevOpen) => !prevOpen);
+		setIsMenuOpen((prevOpen) => !prevOpen);
 	};
 
 	useOutsideClickClose({
-		isOpen: open,
+		isOpen: isMenuOpen,
 		rootRef: sidebarRef,
-		onChange: setOpen,
+		onChange: (newValue) => {
+			if (!newValue) {
+				setIsMenuOpen(false);
+			}
+		},
 	});
 
 	const handleFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -63,10 +67,10 @@ export const ArticleParamsForm = ({
 
 	return (
 		<div>
-			<ArrowButton isOpen={open} onClick={togglePanel} />
+			<ArrowButton isOpen={isMenuOpen} onClick={togglePanel} />
 			<aside
 				ref={sidebarRef}
-				className={clsx(styles.container, { [styles.container_open]: open })}>
+				className={clsx(styles.container, { [styles.container_open]: isMenuOpen })}>
 				<form
 					className={styles.form}
 					onSubmit={handleFormSubmit}
